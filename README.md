@@ -1,2 +1,2 @@
-# Brevl-da-1.0
+# Mailbox-1.0
 Brevlåda med sensor
