@@ -29,14 +29,6 @@ Brevlåda med sensor
 
 5. Vi testade sensorn i brevlådan men den kunde inte känna någon större skillnad när det lades ner brev eller mindre paket i brevlådan. Därefter bestämde vi oss för att utesluta ultraljuds sensorn och istälelt gå över till infraröda sensorer.
 
-## Misstag!
-<img width="2736" height="3648" alt="image" src="https://github.com/user-attachments/assets/0058f725-e645-4400-bba1-fbd190a44c64" />
-
-* Karta på hur ledningen går i plattan.
-* Att koppla flera kaplar på samma rad och sedan koppla ihop med allt annat kommer leda till en kortslutning.
-* Om mikrokontrollern sitter i plattan och är kopplad med kablarna som är kortslutna kommer det förstöra mikrokontrollern.
-
-
 ## Ide 2.0
 1. Infraröda sensorer som ger ut data när någonting har brutit strålen.
 2. Det sitter en på varsin sida innuti brevlådan som formar ljuset som ett slags nät för att kunna känna av oavsätt hur litet brevet/paketet är. Vi vill alltså ha mer träffyta. 
