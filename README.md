@@ -30,5 +30,15 @@ Brevlåda med sensor
 5. Vi testade sensorn i brevlådan men den kunde inte känna någon större skillnad när det lades ner brev eller mindre paket i brevlådan. Därefter bestämde vi oss för att utesluta ultraljuds sensorn och istälelt gå över till infraröda sensorer.
 
 ## Ide 2.0
-1. Infraröda sensorer som ger ut data när någonting har brutit strålen.
-2. Det sitter en på varsin sida innuti brevlådan som formar ljuset som ett slags nät för att kunna känna av oavsätt hur litet brevet/paketet är. Vi vill alltså ha mer träffyta. 
+1. Magnet sensorer som ger ut data när magneterna har brutits.
+2. Den ena mgneten sitter på kanten av locket i brevlådan och den andra magneten sitter mittemot den andra magneten i självaste lådan.
+   <img width="400" height="800" alt="image" src="https://github.com/user-attachments/assets/0fa4d61a-bbcb-48af-bba1-264283327d38" />
+
+## test med magnet sensor
+1. Vi testade lite snabbt hur man kopplade mellan arduino och sensor.
+2. Det här är hur vi kopplade och koden vi använde.
+3. Det fungerade inte som vi hade hoppats, det fanns många delar i koden som inte fungerade för oss och vi va inte helt säkra på att våran koppling stämde.
+4. Vi avvaktade att testa med resistorn tillsvidare. 
+<img width="459" height="841" alt="image" src="https://github.com/user-attachments/assets/f5cf641c-e16d-47c9-9182-bf823c5a26d4" />
+
+
