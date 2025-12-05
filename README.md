@@ -6,7 +6,7 @@ Brevlåda med sensor
 
 ## Användare och kontext
 * Användaren ska inte behöva gå ut och kolla posten ifall det inte finns någonting där.
-* Det kan vara svårt för användare med vissa funktionsvariationer att flera gånger under dagen gå och kolla i sin brevlåda.
+* Användare med funktionsvariationer kan ha svårigheter med att gå ut och kolla i sin brevlåda. Genom att veta när de är post i deras brevlåda, kan förenkla deras vardag.
   
 
 ## Ide 1.0
