@@ -41,4 +41,7 @@ Brevlåda med sensor
 4. Vi avvaktade att testa med resistorn tillsvidare. 
 <img width="459" height="841" alt="image" src="https://github.com/user-attachments/assets/f5cf641c-e16d-47c9-9182-bf823c5a26d4" />
 
+## Hur vi planerar att koppla elektroniken
+<img width="3472" height="4624" alt="image" src="https://github.com/user-attachments/assets/6163bd9c-f1aa-43b0-be03-0faa096719bc" />
+
 
