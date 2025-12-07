@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Postkoll — När kommer breven?</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo" aria-hidden="false">
+      <!-- Enkel inline SVG-logga (kuvert) -->
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Postkoll logo">
+        <rect width="24" height="24" rx="4" fill="#0b5cff" />
+        <path d="M4 7.5L12 13L20 7.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20 9.5V16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="title-wrap">
+      <h1>Postkoll</h1>
+      <p class="tagline">Se när breven brukar komma</p>
+    </div>
+    <div class="header-actions">
+      <button id="open-login" class="login-btn" aria-haspopup="dialog">Logga in</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="selector">
+      <label for="days" class="sr-only">Välj dag</label>
+      <div class="day-buttons" role="tablist" aria-label="Välj veckodag">
+        <button data-day="måndag" role="tab">Måndag</button>
+        <button data-day="tisdag" role="tab">Tisdag</button>
+        <button data-day="onsdag" role="tab">Onsdag</button>
+        <button data-day="torsdag" role="tab">Torsdag</button>
+        <button data-day="fredag" role="tab">Fredag</button>
+        <button data-day="lördag" role="tab">Lördag</button>
+        <button data-day="söndag" role="tab">Söndag</button>
+      </div>
+    </section>
+
+    <section class="schedule" aria-live="polite">
+      <h2 id="selected-day">—</h2>
+      <ul id="times-list">
+        <!-- Tider renderas här -->
+      </ul>
+      <p id="note" class="note"></p>
+    </section>
+  </main>
+
+  <!-- Inloggningsmodal -->
+  <div class="modal" id="login-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content" role="document">
+      <button class="modal-close" aria-label="Stäng">✕</button>
+      <h3>Logga in</h3>
+      <form id="login-form">
+        <label for="username">Namn</label>
+        <input id="username" name="username" type="text" required autocomplete="username" />
+
+        <label for="password">Lösenord</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" />
+
+        <div class="form-actions">
+          <button type="submit" class="login-submit">Logga in</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
