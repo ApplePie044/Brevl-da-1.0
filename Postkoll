@@ -1,0 +1,13 @@
+Postkoll — Enkel lokal webbplats
+Detta är en liten statisk sida för att se när post (brev) brukar komma under veckan.
+
+Användning
+
+Öppna index.html i en webbläsare (dubbelklicka eller öppna via webbläsarens "Open file").
+Klicka på en veckodag (Måndag–Söndag) för att se exempel på leveranstider.
+Redigera tider
+
+Tiderna ligger i script.js under objektet schedule. Ändra eller lägg till tider i formatet "HH:MM".
+Frågor eller ändringar
+
+Vill du att jag lägger till möjlighet att redigera tider i UI, spara inställningar i localStorage, eller importera en verklig leveranskalender? Säg vilken funktion du vill ha så implementerar jag den.
