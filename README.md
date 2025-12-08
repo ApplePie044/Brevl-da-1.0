@@ -66,3 +66,4 @@ Torsdag 18e: Ser till att inge rester är kvar.
 
 Fredag 19e: Gör klart rester.
 
+
