@@ -65,3 +65,4 @@ Onsdag 17e: Möte kolla på webbsidan ser ut i smband med all data vi från in f
 Torsdag 18e: Ser till att inge rester är kvar.
 
 Fredag 19e: Gör klart rester.
+
