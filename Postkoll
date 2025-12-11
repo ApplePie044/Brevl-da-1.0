@@ -10,4 +10,4 @@ Redigera tider
 Tiderna ligger i script.js under objektet schedule. Ändra eller lägg till tider i formatet "HH:MM".
 Frågor eller ändringar
 
-Vill du att jag lägger till möjlighet att redigera tider i UI, spara inställningar i localStorage, eller importera en verklig leveranskalender? Säg vilken funktion du vill ha så implementerar jag den.
+
