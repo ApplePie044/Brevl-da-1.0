@@ -15,6 +15,21 @@ Underlätta för användaren att veta när ens post har nått brevlådan utan at
 <img width="400" height="800" alt="image" src="https://github.com/user-attachments/assets/0fa4d61a-bbcb-48af-bba1-264283327d38" />
 
 ## Magnet sensor 
+### Det som behövs från ett plusivo kit: 
+* Male to male jumper wire 
+* ESP8266
+* HW-131
+* 9 V Batteri
+* DC connector
+* Breadboard
+
+### Övrigt som krävs:
+* Magnet sensor
+
+### Hur den är kopplad:
+1. ESp och HW-131 sätts fast i varsin ände av boardet. 
+2. En magnet av magnetsensorns kabel kopplas till `GND`, den andra till `3v3`.
+
 <img width="4624" height="3472" alt="image" src="https://github.com/user-attachments/assets/9195477f-53d8-4ed5-8aa2-7a358fbb263b" />
 
 ## Kod i arduino 
@@ -32,8 +47,8 @@ int door_state; // current state of door sensor
 int prev_door_state;    // previous state of door sensor
 
 //WIFI 
-const char* ssid = "MDU_guest"; // "Ditt ssid"
-const char* password = "Frozen202512"; // "Ditt lösenord"
+const char* ssid = "----"; // "Ditt ssid"
+const char* password = "----"; // "Ditt lösenord"
 
 // MQTT
 const char* mqtt_server = "10.132.171.30"; // "DIn IP"
@@ -81,7 +96,7 @@ void setup() {
  
 //DOOR 
 
-  pinMode(DOOR_SENSOR_PIN, INPUT_PULLUP); // Använder 13 som är definerad tidigare
+  pinMode(DOOR_SENSOR_PIN, INPUT_PULLUP); // Använder 13 som är definerad tidigare, input pullup är en inbygd resistor
 
   door_state = digitalRead(DOOR_SENSOR_PIN); 
 
