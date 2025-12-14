@@ -145,9 +145,8 @@ void loop() {
     mqttClient.endMessage();
   }
 
+  delay(200);
   
-  
-
 }
 ```
 
