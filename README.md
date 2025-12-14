@@ -28,7 +28,7 @@ Underlätta för användaren att veta när ens post har nått brevlådan utan at
 
 ### Hur den är kopplad:
 1. ESp och HW-131 sätts fast i varsin ände av boardet. 
-2. En magnet av magnetsensorns kabel kopplas till `GND`, den andra till `3v3`.
+2. En magnet av magnetsensorns kabel kopplas till `GND`, den andra till `D7`.
 
 <img width="4624" height="3472" alt="image" src="https://github.com/user-attachments/assets/9195477f-53d8-4ed5-8aa2-7a358fbb263b" />
 
@@ -98,7 +98,8 @@ void setup() {
 
   pinMode(DOOR_SENSOR_PIN, INPUT_PULLUP); // Använder 13 som är definerad tidigare, input pullup är en inbygd resistor
 
-  door_state = digitalRead(DOOR_SENSOR_PIN); 
+  door_state = digitalRead(DOOR_SENSOR_PIN);
+  prev_door_state = door_state;
 
 
   // ANSLUT TILL WIFI 
@@ -138,25 +139,14 @@ void loop() {
   if (prev_door_state == LOW && door_state == HIGH) { // state change: LOW -> HIGH
     Serial.println("The door-opening has been detected");
    
-       mqttClient.beginMessage(topic);
+    mqttClient.beginMessage(topic);
     mqttClient.print("Door: open | Tid: ");
     mqttClient.print(timeClient.getFormattedTime());
     mqttClient.endMessage();
   }
 
   
-  else
-  if (prev_door_state == HIGH && door_state == LOW) { // state change: HIGH -> LOW
-    Serial.println("The door-closing has been detected");
-    
-     mqttClient.beginMessage(topic);
-    mqttClient.print("Door: closed | Tid: ");
-    mqttClient.print(timeClient.getFormattedTime());
-    mqttClient.endMessage();
-  }
-
- 
-  delay(2000); // 2 sekunder 
+  
 
 }
 ```
