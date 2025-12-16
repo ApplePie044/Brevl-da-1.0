@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="sv">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Linjediagram per timme — MQTT driven</title>
+		<style>
+			body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
+			.controls { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap }
+			label { font-size:0.9rem }
+			input[type=text] { padding:6px 8px }
+			canvas { max-width:900px; background:#fff; border:1px solid #ddd; }
+			.status { font-size:0.9rem; margin-left:8px }
+			.legend { margin-top:8px }
+			.small { font-size:0.85rem; color:#555 }
+		</style>
+	</head>
+	<body>
+		<h1>Linjediagram: timme vs sannolikhetskategori</h1>
+
+		<div class="controls">
+			<label>Dag: <select id="daySelect">
+				<option value="Mon">Mån</option>
+				<option value="Tue">Tis</option>
+				<option value="Wed">Ons</option>
+				<option value="Thu">Tor</option>
+				<option value="Fri">Fre</option>
+			</select></label>
+			<span id="wsStatus" class="status small">ws: &#9679; ej ansluten</span>
+		</div>
+
+		<canvas id="chart" width="900" height="300"></canvas>
+
+		<div class="legend small">
+			Y-axeln: <strong>Låg</strong> (0), <strong>Medelmåttig</strong> (1), <strong>Hög</strong> (2).<br>
+			MQTT-meddelandeformat: JSON {"hour":14,"level":"High"} eller {"hour":14,"probability":0.85}. Plaintext som "14:High" eller "14:0.65" fungerar också.
+		</div>
+
+		<!-- Libraries: Chart.js -->
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+		<script>
+			// Setup hourly labels 00-23
+			const labels = Array.from({length:24}, (_,i)=>String(i).padStart(2,'0')+':00');
+
+			// Data: null = no data yet, otherwise 0|1|2
+			const data = Array(24).fill(null);
+
+			const ctx = document.getElementById('chart').getContext('2d');
+
+			// Plugin to paint background bands for y regions
+			const bandPlugin = {
+				id: 'bands',
+				beforeDraw(chart) {
+					const {ctx, chartArea: {left, right, top, bottom}, scales: {y}} = chart;
+					const bandHeight = (bottom - top)/3;
+					// Colors for Low, Medium, High (soft)
+					const colors = ['#e8f5e9','#fff8e1','#ffebee'];
+					for (let i=0;i<3;i++){
+						ctx.fillStyle = colors[i];
+						ctx.fillRect(left, top + i*bandHeight, right-left, bandHeight);
+					}
+				}
+			};
+
+			const chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels,
+					datasets: [{
+						label: 'Sannolikhet (kategori)',
+						data: data,
+						borderColor: '#1976d2',
+						backgroundColor: 'rgba(25,118,210,0.08)',
+						tension: 0.2,
+						spanGaps: true,
+						pointRadius: 6,
+						pointHoverRadius:8
+					}]
+				},
+				options: {
+					animation: {duration: 250},
+					scales: {
+						y: {
+							min: -0.2,
+							max: 2.2,
+							ticks: {
+								stepSize: 1,
+								callback: v => v===0? 'Låg' : v===1? 'Medel' : v===2? 'Hög' : ''
+							}
+						}
+					},
+					plugins: {
+						legend: { display: false }
+					}
+				},
+				plugins: [bandPlugin]
+			});
+
+			// WebSocket client to receive updates from local server
+			const wsStatus = document.getElementById('wsStatus');
+			const daySelect = document.getElementById('daySelect');
+			function setWsStatus(text, color='gray'){ wsStatus.textContent = text; wsStatus.style.color = color; }
+
+			// store per day
+			const days = ['Mon','Tue','Wed','Thu','Fri'];
+			const store = {};
+			for (const d of days) store[d] = Array(24).fill(null);
+
+			let ws = null;
+
+			function connectWs(){
+				try {
+					ws = new WebSocket('ws://localhost:8080');
+				} catch(e){ setWsStatus('ws: fel', 'red'); console.error(e); return; }
+				setWsStatus('ws: ansluter...', 'orange');
+				ws.addEventListener('open', ()=>{ setWsStatus('ws: ansluten', 'green'); });
+				ws.addEventListener('message', (ev)=>{
+					try {
+						const obj = JSON.parse(ev.data);
+						if (obj.type === 'full' && obj.store){
+							// replace local store
+							for (const d of Object.keys(obj.store)){ if (store[d]) store[d] = obj.store[d]; }
+							renderCurrentDay();
+						} else if (obj.type === 'update-day'){
+							if (store[obj.day]) store[obj.day] = obj.values;
+							renderCurrentDay();
+						} else if (obj.type === 'point'){
+							if (store[obj.day]) store[obj.day][obj.hour] = obj.level;
+							renderCurrentDay();
+						} else if (obj.type === 'point-all'){
+							for (const d of days) store[d][obj.hour] = obj.level;
+							renderCurrentDay();
+						}
+					} catch(e){ console.warn('Invalid ws msg', e); }
+				});
+				ws.addEventListener('close', ()=>{ setWsStatus('ws: ej ansluten', 'gray'); setTimeout(connectWs, 2000); });
+				ws.addEventListener('error', (e)=>{ setWsStatus('ws: fel', 'red'); console.error(e); });
+			}
+			connectWs();
+
+			function mapLevelToIndex(level){
+				if (typeof level === 'number'){
+					// probability 0..1
+					if (level < 0.33) return 0;
+					if (level < 0.66) return 1;
+					return 2;
+				}
+				const s = String(level).toLowerCase();
+				if (['låg','lag','low','0','low'].includes(s)) return 0;
+				if (['medel','med','medium','1','medelmåttig'].includes(s)) return 1;
+				if (['hög','hog','high','2'].includes(s)) return 2;
+				// try parse as number
+				const v = parseFloat(level);
+				if (!isNaN(v)) return mapLevelToIndex(v);
+				return null;
+			}
+
+			function updateChart(hour, levelIdx){
+				if (hour<0 || hour>23) return;
+				data[hour] = levelIdx;
+				chart.data.datasets[0].data = data;
+				chart.update();
+			}
+
+			function renderCurrentDay(){
+				const d = daySelect.value || 'Mon';
+				const arr = store[d] || Array(24).fill(null);
+				for (let i=0;i<24;i++) data[i] = arr[i];
+				chart.data.datasets[0].data = data;
+				chart.update();
+			}
+
+			// page no longer directly parses MQTT messages; the server sends day-based updates over WebSocket
+
+			// Switch day selection
+			daySelect.addEventListener('change', ()=>{ renderCurrentDay(); });
+
+			// Expose for debugging
+			window.renderCurrentDay = renderCurrentDay;
+			window.store = store;
+		</script>
+	</body>
+</html>
