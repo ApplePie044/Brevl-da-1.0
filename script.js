@@ -1,13 +1,4 @@
-// Enkel data med exempel tider. Redigera vid behov.
-const schedule = {
-  "måndag": ["08:30","15:00"],
-  "tisdag": ["08:30","15:00"],
-  "onsdag": ["08:30","15:00"],
-  "torsdag": ["08:30","15:00"],
-  "fredag": ["08:30","15:00"],
-  "lördag": ["10:00"],
-  "söndag": []
-};
+
 
 const dayOrder = ["söndag","måndag","tisdag","onsdag","torsdag","fredag","lördag"];
 
@@ -40,62 +31,7 @@ function renderTimes(day){
 
   const accentRgb = hexToRgb(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
 
-  // create meter: integer-hour segments across 06:00 - 20:00 (peak centered on expected time)
-  function createMeter(expectedTime){
-    const [hh,mm] = expectedTime.split(':').map(n=>parseInt(n,10));
-    const expected = (hh || 0) + ((mm || 0) / 60);
-    const expectedHour = Math.floor(expected); // make the hour containing the expected time the peak
-    const sigma = 1.6; // spread in hours (wider)
-
-    const meter = document.createElement('div');
-    meter.className = 'meter';
-
-    const startHour = 6;
-    const endHour = 20;
-
-    let bestIndex = 0;
-    let bestVal = -Infinity;
-
-    for(let h=startHour; h<=endHour; h++){
-      const seg = document.createElement('div');
-      seg.className = 'meter-segment';
-      // compute intensity based on difference to the expected hour (so the expected hour is strongest)
-      const diff = h - expectedHour;
-      const intensity = Math.exp(-(diff*diff)/(2*sigma*sigma)); // 0..1
-      if(intensity > bestVal){ bestVal = intensity; bestIndex = h - startHour; }
-      const alpha = 0.12 + intensity * 0.88; // min alpha 0.12 -> max 1
-      seg.style.backgroundColor = `rgba(${accentRgb[0]}, ${accentRgb[1]}, ${accentRgb[2]}, ${alpha.toFixed(3)})`;
-      // attach data for tooltip
-      seg.dataset.time = `${String(h).padStart(2,'0')}:00`;
-      seg.dataset.prob = String(Math.round(intensity * 100));
-      // remove native title to avoid double tooltip
-      seg.removeAttribute('title');
-      meter.appendChild(seg);
-    }
-
-    // highlight the most likely hour (the expected hour)
-    const children = meter.children;
-    if(children && children[bestIndex]){
-      children[bestIndex].style.boxShadow = `0 0 0 2px rgba(${accentRgb[0]}, ${accentRgb[1]}, ${accentRgb[2]}, 0.22)`;
-    }
-
-    // hour labels row
-    const hoursRow = document.createElement('div');
-    hoursRow.className = 'meter-hours';
-    const leftLabel = document.createElement('span');
-    leftLabel.textContent = `${startHour}:00`;
-    const rightLabel = document.createElement('span');
-    rightLabel.textContent = `${endHour}:00`;
-    hoursRow.appendChild(leftLabel);
-    hoursRow.appendChild(rightLabel);
-
-    const wrap = document.createElement('div');
-    wrap.appendChild(meter);
-    wrap.appendChild(hoursRow);
-    // attach tooltip handlers for this meter's segments
-    attachSegmentTooltips(meter);
-    return wrap;
-  }
+ 
 
   // ensure single tooltip element exists
   function ensureTooltip(){
@@ -109,21 +45,6 @@ function renderTimes(day){
     return tip;
   }
 
-  // attach hover/move/leave handlers on segments to show custom tooltip
-  function attachSegmentTooltips(meterEl){
-    const tip = ensureTooltip();
-    Array.from(meterEl.children).forEach(seg => {
-      seg.addEventListener('mouseenter', (e)=>{
-        const t = seg.dataset.time || '';
-        const p = seg.dataset.prob ? seg.dataset.prob + '%' : '';
-        tip.textContent = t + (p ? ' — ' + p : '');
-        tip.classList.add('visible');
-        positionTooltip(e, tip);
-      });
-      seg.addEventListener('mousemove', (e)=> positionTooltip(e, tip));
-      seg.addEventListener('mouseleave', ()=>{ tip.classList.remove('visible'); });
-    });
-  }
 
   function positionTooltip(evt, tip){
     const pad = 10; // offset
